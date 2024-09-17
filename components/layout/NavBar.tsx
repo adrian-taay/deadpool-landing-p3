@@ -24,47 +24,35 @@ const NavBar: React.FC = () => {
   const matches = useMediaQuery("(min-width: 768px)");
   const { scrollY } = useScroll();
   const [toggleMenu, setToggleMenu] = useState(false);
-  const [isTransparent, setIsTransparent] = useState(true);
+  const [isMouseScrolledDown, setIsMouseScrolledDown] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 10) {
-      setIsTransparent(false);
+      setIsMouseScrolledDown(true);
     } else {
-      setIsTransparent(true);
+      setIsMouseScrolledDown(false);
     }
   });
 
   return (
-    <motion.section
-      initial={{
-        top: 0,
-      }}
-      animate={{
-        top: isTransparent && matches ? 0 : !matches ? 0 : "35px",
-      }}
+    <section
       className={cn(
-        "w-full max-w-screen-2xl md:rounded-full mx-auto flex justify-center items-center fixed z-50 transition-color",
-        !isTransparent &&
-          "bg-black/75 backdrop-blur-lg md:w-max inset-x-0 pl-6 border border-stone-700",
+        "w-full max-w-screen-2xl mx-auto flex justify-center items-center fixed z-50 transition-color 2xl:rounded-b-lg",
+        isMouseScrolledDown && "bg-black/75 backdrop-blur-lg inset-x-0",
         !matches && "pl-0"
       )}
     >
       <div
         className={cn(
           "w-11/12 h-32 flex justify-between items-center",
-          !isTransparent && "h-16 w-full",
-          !matches && isTransparent && "h-28",
-          !matches && !isTransparent && "h-20"
+          isMouseScrolledDown && "h-24 w-full px-4",
+          !matches && !isMouseScrolledDown && "h-24",
+          !matches && isMouseScrolledDown && "h-20"
         )}
       >
-        {isTransparent ? <Logo /> : null}
+        {matches ? <Logo /> : null}
         {/* Mobile and tablet view */}
-        <div
-          className={cn(
-            "w-max md:w-6/12 md:hidden flex items-center px-6 gap-6 md:px-1",
-            !isTransparent && !matches && "w-full justify-between"
-          )}
-        >
+        <div className="md:w-6/12 md:hidden flex items-center px-4 gap-6 md:px-1 w-full justify-between">
           <div>
             <Phone />
           </div>
@@ -108,7 +96,7 @@ const NavBar: React.FC = () => {
                 key={idx}
                 className={cn(
                   "md:text-sm lg:text-base relative w-full hover:border-b-2 hover:text-deadpool-secondary border-deadpool-secondary text-center pb-1",
-                  !isTransparent && "!text-sm"
+                  !isMouseScrolledDown && "!text-sm"
                 )}
               >
                 <Link href={href}>{text}</Link>
@@ -117,17 +105,17 @@ const NavBar: React.FC = () => {
           </ul>
           <Button
             variant="secondary"
-            size={!isTransparent ? "sm" : "default"}
+            size={!isMouseScrolledDown ? "sm" : "default"}
             className={cn(
               "rounded-full md:text-xs lg:text-sm",
-              !isTransparent && "p-3 ml-2"
+              !isMouseScrolledDown && "p-3 ml-2"
             )}
           >
             Contact
           </Button>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
